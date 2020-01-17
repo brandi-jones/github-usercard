@@ -11,6 +11,9 @@ axios.get("https://api.github.com/users/brandi-jones")
   //console.log(response.data);
   const newItem = createCard(response.data);
   cards.appendChild(newItem);
+
+  getFollowers(response.data); //get urls of my followers in an arra
+
 })
 .catch(error => {
   console.log("The data was not returned. Error: ", error);
@@ -37,18 +40,18 @@ axios.get("https://api.github.com/users/brandi-jones")
           user, and adding that card to the DOM.
 */
 
-const followersArray = ["Cory-Light", "ErikRodriguez-webdev", "naj10000", "Devin44G", "tetondan"];
+//const followersArray = ["Cory-Light", "ErikRodriguez-webdev", "naj10000", "Devin44G", "tetondan"];
 
-followersArray.forEach(currentVal => {
-  axios.get("https://api.github.com/users/" + currentVal)
-  .then(response => {
-    const newItem = createCard(response.data);
-    cards.appendChild(newItem);
-  })
-  .catch(error => {
-    console.log("The data was not returned. Error: ", error);
-  })
-});
+// followersArray.forEach(currentVal => {
+//   axios.get("https://api.github.com/users/" + currentVal)
+//   .then(response => {
+//     const newItem = createCard(response.data);
+//     cards.appendChild(newItem);
+//   })
+//   .catch(error => {
+//     console.log("The data was not returned. Error: ", error);
+//   })
+// });
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -116,6 +119,31 @@ function createCard(object) {
 
   return card;
 };
+
+
+function getFollowers(object) {
+
+  const followersUrl = object.followers_url;
+  axios.get(followersUrl)
+  .then(response => {
+    console.log(response);
+    response.data.forEach(currentVal => {
+
+      axios.get(currentVal.url)
+      .then(response => {
+        const newFollower = createCard(response.data);
+        cards.appendChild(newFollower);
+        
+      })
+      .catch(error => {
+        console.log("The data was not returned. Error: ", error);
+      })
+      
+    });
+  });
+
+  return;
+}
 
 
 
